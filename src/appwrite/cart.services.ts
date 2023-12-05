@@ -111,6 +111,7 @@ class CartService {
         },
       });
       console.log('Appwrite service :: updateCart() :: ' + error);
+      return false;
     }
   }
 

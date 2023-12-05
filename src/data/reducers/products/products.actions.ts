@@ -15,3 +15,16 @@ export const getProducts = createAsyncThunk(
     }
   },
 );
+
+export const getMyProducts = createAsyncThunk(
+  'product/getMyProducts',
+  async (payload, {rejectWithValue}) => {
+    const products = await productService.getMyProducts(payload);
+    console.log(products, 'products');
+    if (products) {
+      return products;
+    } else {
+      return rejectWithValue('Unauthorized, Login again...');
+    }
+  },
+);

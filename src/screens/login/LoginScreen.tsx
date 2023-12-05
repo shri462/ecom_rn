@@ -34,7 +34,6 @@ const LoginScreen = () => {
 
   const login = async formData => {
     const res = await authService.login(formData);
-    console.log(res);
   };
 
   return (

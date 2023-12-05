@@ -1,7 +1,7 @@
 import {FlatList, StyleSheet, View} from 'react-native';
 import React, {useEffect} from 'react';
-import {Appbar, Badge, Text} from 'react-native-paper';
-import {colors, paperThemeColors} from '../../constants/colors';
+import {Appbar, Badge} from 'react-native-paper';
+import {colors} from '../../constants/colors';
 import Product from '../../components/Product';
 import {useAppDispatch, useAppSelector} from '../../data/hooks/hooks';
 import {getProducts} from '../../data/reducers/products/products.actions';
@@ -43,7 +43,11 @@ const Dashboard = () => {
         keyExtractor={item => item.$id}
         renderItem={({item}) => <Product item={item} />}
         numColumns={2}
-        contentContainerStyle={{paddingHorizontal: 12}}
+        contentContainerStyle={{
+          paddingHorizontal: 12,
+          rowGap: 12,
+          paddingBottom: 48,
+        }}
         columnWrapperStyle={{columnGap: 12}}
       />
     </View>

@@ -6,7 +6,6 @@ export const checkLogin = createAsyncThunk(
   'auth/checkLogin',
   async (payload, {rejectWithValue}) => {
     const loggedUser = await authService.getCurrentUser();
-    console.log(loggedUser, 'logged user');
     if (loggedUser) {
       return loggedUser;
     } else {

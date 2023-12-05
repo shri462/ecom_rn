@@ -12,6 +12,12 @@ import {Icon} from 'react-native-paper';
 export const HEIGHT_SIZE = 44;
 
 export const TabBar = ({props: {state, descriptors, navigation}}) => {
+  const focusedOptions = descriptors[state.routes[state.index].key].options;
+
+  if (focusedOptions.tabBarVisible === false) {
+    return null;
+  }
+
   return (
     <View style={styles.container}>
       <View style={StyleSheet.absoluteFill}>
@@ -46,7 +52,6 @@ export const TabBar = ({props: {state, descriptors, navigation}}) => {
                 accessibilityRole="button"
                 accessibilityState={isFocused ? {selected: true} : {}}
                 accessibilityLabel={options.tabBarAccessibilityLabel}
-                testID={options.tabBarTestID}
                 onPress={onPress}
                 onLongPress={onLongPress}
                 style={styles.button}>
@@ -115,14 +120,15 @@ const styles = StyleSheet.create({
     position: 'absolute',
     shadowColor: colors.black,
     shadowOffset: {
-      width: 0,
-      height: 0,
+      width: 2,
+      height: 4,
     },
     shadowOpacity: 0.2,
     elevation: 48,
     height: HEIGHT_SIZE,
     justifyContent: 'center',
     bottom: 0,
+    backgroundColor: colors.white,
   },
   content: {
     flex: 1,

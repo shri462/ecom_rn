@@ -13,3 +13,5 @@ export const appRoutes = {
   BottomTabNavigator: 'BottomTabNavigator',
   MainNavigator: 'MainNavigator',
 };
+
+export const excludeTabBar = [appRoutes.AddProduct, appRoutes.Cart];

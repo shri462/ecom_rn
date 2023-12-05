@@ -1,5 +1,6 @@
 import {
   Image,
+  Keyboard,
   KeyboardAvoidingView,
   PermissionsAndroid,
   Platform,
@@ -8,6 +9,7 @@ import {
   StyleSheet,
   TouchableHighlight,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 import React, {useState} from 'react';
@@ -29,7 +31,10 @@ import {PERMISSIONS, RESULTS, check, request} from 'react-native-permissions';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import Toast from 'react-native-toast-message';
 import {appRoutes} from '../../constants/routes';
-import {getProducts} from '../../data/reducers/products/products.actions';
+import {
+  getMyProducts,
+  getProducts,
+} from '../../data/reducers/products/products.actions';
 
 const sizes = [
   {
@@ -81,10 +86,8 @@ const AddProduct = () => {
       setImageError('Please upload the product image');
       return;
     }
-    console.log(localImage);
     try {
       const image = await productService.uploadFile(localImage);
-      console.log(image, 'upload image res');
       if (image) {
         const res = await productService.createProduct({
           ...formData,
@@ -98,6 +101,7 @@ const AddProduct = () => {
             props: {message: 'Product added successfully!', isError: false},
           });
           dispatch(getProducts());
+          dispatch(getMyProducts(loggedUser?.$id));
           navigate(appRoutes.Profile);
         } else {
           Toast.show({
@@ -140,7 +144,6 @@ const AddProduct = () => {
         }
       } else if (Platform.OS == 'ios') {
         const result = await check(PERMISSIONS.IOS.CAMERA);
-        console.log('result: ', result);
         if (result === RESULTS.GRANTED) {
           takePhoto();
         } else {
@@ -184,170 +187,173 @@ const AddProduct = () => {
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}>
-      <Appbar.Header>
-        <Appbar.BackAction onPress={() => goBack()} />
-        <Appbar.Content title="Add Product" />
-      </Appbar.Header>
-      <ScrollView
-        keyboardShouldPersistTaps="handled"
-        style={{
-          paddingHorizontal: 24,
-        }}>
-        <Controller
-          control={control}
-          render={({field: {onChange, onBlur, value, name, field}}) => (
-            <TextInput
-              placeholder="Enter brand name"
-              value={value}
-              onChangeText={e => onChange(e)}
-              mode="outlined"
-              label={'Brand Name'}
-              error={errors['brandName'] ? true : false}
-            />
-          )}
-          name={'brandName'}
-          rules={{
-            required: {
-              value: true,
-              message: 'Brand Name is required',
-            },
+      <>
+        <Appbar.Header>
+          <Appbar.BackAction onPress={() => goBack()} />
+          <Appbar.Content title="Add Product" />
+        </Appbar.Header>
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          style={{
+            paddingHorizontal: 24,
           }}
-        />
-        {errors && errors['brandName'] && (
-          <Text variant="bodySmall" style={{color: paperThemeColors.error}}>
-            {errors['brandName']?.message ? errors['brandName']?.message : ''}
-          </Text>
-        )}
-        <Controller
-          control={control}
-          render={({field: {onChange, onBlur, value, name, field}}) => (
-            <TextInput
-              style={_.mt_16}
-              placeholder="Enter name"
-              value={value}
-              onChangeText={e => onChange(e)}
-              mode="outlined"
-              label={'Name'}
-              error={errors['name'] ? true : false}
-            />
-          )}
-          name={'name'}
-          rules={{
-            required: {
-              value: true,
-              message: 'Name is required',
-            },
-          }}
-        />
-        {errors && errors['name'] && (
-          <Text variant="bodySmall" style={{color: paperThemeColors.error}}>
-            {errors['name']?.message ? errors['name']?.message : ''}
-          </Text>
-        )}
-        <Controller
-          control={control}
-          render={({field: {onChange, onBlur, value, name, field}}) => (
-            <TextInput
-              style={_.mt_16}
-              placeholder="Enter price"
-              value={value}
-              onChangeText={e => onChange(e)}
-              mode="outlined"
-              label={'Price'}
-              error={errors['price'] ? true : false}
-              keyboardType="numeric"
-            />
-          )}
-          name={'price'}
-          rules={{
-            required: {
-              value: true,
-              message: 'Price is required',
-            },
-          }}
-        />
-        {errors && errors['price'] && (
-          <Text variant="bodySmall" style={{color: paperThemeColors.error}}>
-            {errors['price']?.message ? errors['price']?.message : ''}
-          </Text>
-        )}
-
-        <Text style={[_.mt_16]} variant="labelLarge">
-          Select Available Sizes
-        </Text>
-        <View style={[_.flex_r, _.mt_8, {columnGap: 8}]}>
-          {sizes.map(size => (
-            <TouchableOpacity
-              key={size.id}
-              onPress={() => onSelectSize(size.label)}
-              activeOpacity={0.7}>
-              <Avatar.Text
-                size={32}
-                color={
-                  selectedSizes?.includes(size.label)
-                    ? paperThemeColors.primaryContainer
-                    : paperThemeColors.primary
-                }
-                label={String(size.label)}
-                style={{
-                  backgroundColor: selectedSizes?.includes(size.label)
-                    ? paperThemeColors.primary
-                    : paperThemeColors.primaryContainer,
-                }}
+          contentContainerStyle={{paddingBottom: 48}}>
+          <Controller
+            control={control}
+            render={({field: {onChange, onBlur, value, name, field}}) => (
+              <TextInput
+                placeholder="Enter brand name"
+                value={value}
+                onChangeText={e => onChange(e)}
+                mode="outlined"
+                label={'Brand Name'}
+                error={errors['brandName'] ? true : false}
               />
-            </TouchableOpacity>
-          ))}
-        </View>
-        {sizeError && (
-          <Text
-            variant="bodySmall"
-            style={{color: paperThemeColors.error, marginTop: 4}}>
-            {sizeError}
-          </Text>
-        )}
+            )}
+            name={'brandName'}
+            rules={{
+              required: {
+                value: true,
+                message: 'Brand Name is required',
+              },
+            }}
+          />
+          {errors && errors['brandName'] && (
+            <Text variant="bodySmall" style={{color: paperThemeColors.error}}>
+              {errors['brandName']?.message ? errors['brandName']?.message : ''}
+            </Text>
+          )}
+          <Controller
+            control={control}
+            render={({field: {onChange, onBlur, value, name, field}}) => (
+              <TextInput
+                style={_.mt_16}
+                placeholder="Enter name"
+                value={value}
+                onChangeText={e => onChange(e)}
+                mode="outlined"
+                label={'Name'}
+                error={errors['name'] ? true : false}
+              />
+            )}
+            name={'name'}
+            rules={{
+              required: {
+                value: true,
+                message: 'Name is required',
+              },
+            }}
+          />
+          {errors && errors['name'] && (
+            <Text variant="bodySmall" style={{color: paperThemeColors.error}}>
+              {errors['name']?.message ? errors['name']?.message : ''}
+            </Text>
+          )}
+          <Controller
+            control={control}
+            render={({field: {onChange, onBlur, value, name, field}}) => (
+              <TextInput
+                style={_.mt_16}
+                placeholder="Enter price"
+                value={value}
+                onChangeText={e => onChange(e)}
+                mode="outlined"
+                label={'Price'}
+                error={errors['price'] ? true : false}
+                keyboardType="numeric"
+              />
+            )}
+            name={'price'}
+            rules={{
+              required: {
+                value: true,
+                message: 'Price is required',
+              },
+            }}
+          />
+          {errors && errors['price'] && (
+            <Text variant="bodySmall" style={{color: paperThemeColors.error}}>
+              {errors['price']?.message ? errors['price']?.message : ''}
+            </Text>
+          )}
 
-        {localImage?.path ? (
-          <View style={{height: 200, width: 200, marginTop: 16}}>
-            <Image
-              resizeMode="contain"
-              source={{
-                uri: localImage?.path,
-              }}
-              style={{width: 200, height: 200, borderRadius: 12}}
-            />
-            <IconButton
-              icon="delete"
-              iconColor={paperThemeColors.primary}
-              size={20}
-              onPress={() => setLocalImage({})}
-              style={styles.removeMediaBtn}
-            />
+          <Text style={[_.mt_16]} variant="labelLarge">
+            Select Available Sizes
+          </Text>
+          <View style={[_.flex_r, _.mt_8, {columnGap: 8}]}>
+            {sizes.map(size => (
+              <TouchableOpacity
+                key={size.id}
+                onPress={() => onSelectSize(size.label)}
+                activeOpacity={0.7}>
+                <Avatar.Text
+                  size={32}
+                  color={
+                    selectedSizes?.includes(size.label)
+                      ? paperThemeColors.primaryContainer
+                      : paperThemeColors.primary
+                  }
+                  label={String(size.label)}
+                  style={{
+                    backgroundColor: selectedSizes?.includes(size.label)
+                      ? paperThemeColors.primary
+                      : paperThemeColors.primaryContainer,
+                  }}
+                />
+              </TouchableOpacity>
+            ))}
           </View>
-        ) : (
+          {sizeError && (
+            <Text
+              variant="bodySmall"
+              style={{color: paperThemeColors.error, marginTop: 4}}>
+              {sizeError}
+            </Text>
+          )}
+
+          {localImage?.path ? (
+            <View style={{height: 200, width: 200, marginTop: 16}}>
+              <Image
+                resizeMode="contain"
+                source={{
+                  uri: localImage?.path,
+                }}
+                style={{width: 200, height: 200, borderRadius: 12}}
+              />
+              <IconButton
+                icon="delete"
+                iconColor={paperThemeColors.primary}
+                size={20}
+                onPress={() => setLocalImage({})}
+                style={styles.removeMediaBtn}
+              />
+            </View>
+          ) : (
+            <Button
+              style={[_.mt_16]}
+              icon="camera"
+              mode="outlined"
+              onPress={openCamera}>
+              Click product image
+            </Button>
+          )}
+
+          {imageError && (
+            <Text
+              variant="bodySmall"
+              style={{color: paperThemeColors.error, marginTop: 4}}>
+              {imageError}
+            </Text>
+          )}
+
           <Button
-            style={[_.mt_16]}
-            icon="camera"
-            mode="outlined"
-            onPress={openCamera}>
-            Click product image
+            style={_.mt_16}
+            mode="contained"
+            onPress={handleSubmit(addProduct)}>
+            Register
           </Button>
-        )}
-
-        {imageError && (
-          <Text
-            variant="bodySmall"
-            style={{color: paperThemeColors.error, marginTop: 4}}>
-            {imageError}
-          </Text>
-        )}
-
-        <Button
-          style={_.mt_16}
-          mode="contained"
-          onPress={handleSubmit(addProduct)}>
-          Register
-        </Button>
-      </ScrollView>
+        </ScrollView>
+      </>
     </KeyboardAvoidingView>
   );
 };

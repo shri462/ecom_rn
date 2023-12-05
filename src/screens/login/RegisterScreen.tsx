@@ -30,13 +30,11 @@ const RegisterScreen = () => {
   const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
 
   const register = async formData => {
-    console.log(formData);
     try {
       const res = await authService.createAccount({
         ...formData,
         isAdmin: isSwitchOn,
       });
-      console.log(res, 'registed');
       if (res) {
         await authService.updatePrefs(isSwitchOn);
         await dispatch(checkLogin());

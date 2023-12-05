@@ -1,4 +1,4 @@
-import {ID, Client, Databases, Storage} from 'appwrite';
+import {ID, Client, Databases, Storage, Query} from 'appwrite';
 import Config from 'react-native-config';
 import Toast from 'react-native-toast-message';
 import storage from '@react-native-firebase/storage';
@@ -105,7 +105,6 @@ class ProductService {
     }
   }
 
-  //   TODO: add, queries = [Query.equal("status", "active")]
   async getProducts() {
     try {
       return await this.database.listDocuments(
@@ -115,6 +114,21 @@ class ProductService {
       );
     } catch (error) {
       console.log('Appwrite serive :: getProducts :: error', error);
+      return false;
+    }
+  }
+
+  //   TODO: add, queries = [Query.equal("status", "active")]
+  async getMyProducts(id: string) {
+    try {
+      return await this.database.listDocuments(
+        APPWRITE_DATABASE_ID,
+        APPWRITE_COLLECTION_ID_PRODUCTS,
+        // queries,
+        [Query.equal('userId', id)],
+      );
+    } catch (error) {
+      console.log('Appwrite serive :: getMyProducts :: error', error);
       return false;
     }
   }

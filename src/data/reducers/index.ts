@@ -3,11 +3,13 @@ import {combineReducers} from 'redux';
 import authReducer from './auth/auth.reducer';
 import productsReducer from './products/products.reducer';
 import cartReducer from './cart/cart.reducer';
+import orderReducer from './order/order.reducer';
 
 const rootReducer = combineReducers({
   auth: authReducer,
   product: productsReducer,
   cart: cartReducer,
+  order: orderReducer,
 });
 
 const reduxStore = configureStore({
