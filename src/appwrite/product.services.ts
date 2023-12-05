@@ -1,7 +1,6 @@
-import {ID, Account, Client, Databases, Query, Storage} from 'appwrite';
+import {ID, Client, Databases, Storage} from 'appwrite';
 import Config from 'react-native-config';
 import Toast from 'react-native-toast-message';
-import RNFS from 'react-native-fs';
 import storage from '@react-native-firebase/storage';
 
 const appwriteClient = new Client();
@@ -120,9 +119,9 @@ class ProductService {
     }
   }
 
+  // using firebase for storing images
   async uploadFile(data) {
     const filename = data.path.split('/')?.[data.path.split('/')?.length - 1];
-    console.log(filename);
     let reference = storage().ref(filename); // 2
 
     try {
@@ -131,28 +130,6 @@ class ProductService {
     } catch (error) {
       return false;
     }
-
-    // try {
-    //   const file = {
-    //     path: data.path,
-    //     type: 'image/jpeg',
-    //     name: 'name.jpg',
-    //   };
-    //   const res = await this.bucket.createFile(
-    //     APPWRITE_BUCKET_ID,
-    //     ID.unique(),
-    //     file,
-    //   );
-    //   console.log(res);
-    //   return res;
-    // } catch (error) {
-    //   console.log('Appwrite serive :: uploadFile :: error', error);
-    //   return false;
-    // }
-  }
-
-  async getFile(fileId: string) {
-    return await this.bucket.getFile(APPWRITE_BUCKET_ID, fileId);
   }
 }
 

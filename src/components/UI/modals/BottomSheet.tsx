@@ -18,12 +18,13 @@ if (
 }
 
 type Props = {
+  title: string;
   show: boolean;
   children: React.ReactNode;
   close: () => void;
 };
 
-const BottomSheet = ({children, show, close = () => {}}: Props) => {
+const BottomSheet = ({title, children, show, close = () => {}}: Props) => {
   return (
     <Modal
       isVisible={show}
@@ -42,7 +43,11 @@ const BottomSheet = ({children, show, close = () => {}}: Props) => {
       <View
         style={[
           styles.bottomSheet,
-          {borderTopRightRadius: 20, borderTopLeftRadius: 20},
+          {
+            borderTopRightRadius: 20,
+            borderTopLeftRadius: 20,
+            paddingBottom: 12,
+          },
         ]}>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'height' : undefined}>
@@ -55,10 +60,10 @@ const BottomSheet = ({children, show, close = () => {}}: Props) => {
               alignItems: 'center',
               marginBottom: 12,
             }}>
-            <Text variant="titleLarge">Sort By</Text>
+            <Text variant="titleLarge">{title}</Text>
             <IconButton
               icon="close"
-              iconColor={colors.primary}
+              iconColor={paperThemeColors.primary}
               size={20}
               onPress={() => {
                 close();
@@ -79,7 +84,7 @@ const styles = StyleSheet.create({
     margin: 0,
   },
   bottomSheet: {
-    backgroundColor: paperThemeColors.primaryContainer,
+    backgroundColor: colors.white,
     width: '100%',
     paddingHorizontal: 24,
   },

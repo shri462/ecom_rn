@@ -5,6 +5,7 @@ type UserState = {
   authenticate: boolean;
   loggedUser:
     | {
+        $id: string;
         email: string;
         name: string;
         prefs: {

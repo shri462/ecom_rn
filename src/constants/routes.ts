@@ -7,6 +7,7 @@ export const appRoutes = {
   Dashboard: 'Dashboard',
   Profile: 'Profile',
   AddProduct: 'AddProduct',
+  Cart: 'Cart',
   AppStackNavigator: 'AppStackNavigator',
   ProfileStackNavigator: 'ProfileStackNavigator',
   BottomTabNavigator: 'BottomTabNavigator',

@@ -29,6 +29,7 @@ import {PERMISSIONS, RESULTS, check, request} from 'react-native-permissions';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import Toast from 'react-native-toast-message';
 import {appRoutes} from '../../constants/routes';
+import {getProducts} from '../../data/reducers/products/products.actions';
 
 const sizes = [
   {
@@ -91,13 +92,12 @@ const AddProduct = () => {
           image: image.metadata.fullPath,
           userId: loggedUser.$id,
         });
-
-        console.log(res, 'product added');
         if (res) {
           Toast.show({
             type: 'customToast',
             props: {message: 'Product added successfully!', isError: false},
           });
+          dispatch(getProducts());
           navigate(appRoutes.Profile);
         } else {
           Toast.show({
