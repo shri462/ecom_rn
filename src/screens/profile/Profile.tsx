@@ -32,13 +32,15 @@ const Profile = () => {
         style={{padding: 12}}
         contentContainerStyle={{paddingBottom: 48}}>
         <Text variant="titleLarge">Welcome, {loggedUser?.name}</Text>
-        <Button
-          style={[_.mt_16]}
-          icon="shoe-sneaker"
-          mode="contained"
-          onPress={() => navigate(appRoutes.AddProduct)}>
-          Add Product
-        </Button>
+        {loggedUser?.prefs.role === 'admin' && (
+          <Button
+            style={[_.mt_16]}
+            icon="shoe-sneaker"
+            mode="contained"
+            onPress={() => navigate(appRoutes.AddProduct)}>
+            Add Product
+          </Button>
+        )}
         {loggedUser?.prefs.role === 'admin' && <MyProducts />}
         {loggedUser?.prefs.role !== 'admin' && <MyOrders />}
       </ScrollView>
